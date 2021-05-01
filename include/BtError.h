@@ -9,7 +9,8 @@
  ********************************
  */
 
-
+#ifndef __BTERROR__
+#define __BTERROR__
 #include <string>
 
 class ErrorCatcher{
@@ -32,6 +33,20 @@ public:
 	} ERROR;
 
 public:
-	static const std::string ErrorCatcher::
-
+	static const std::string fileFdError();
+	static const std::string fileReadError();
+	static const std::string fileWriteError();
+	static const std::string invalidSocketError();
+	static const std::string invalidTrackerUrlError();
+	static const std::string invalidTrackerReplyError();
+	static const std::string invalidHashError();
+	static const std::string invalidMessageError();
+	static const std::string invalidParameterError();
+	static const std::string failedAllocateMemError();
+	static const std::string noBufferError();
+	static const std::string readSocketError();
+	static const std::string writeSocketError();
+	static const std::string receiveExitSignalError();
 };
+
+#endif /* __BTERROR__  */
