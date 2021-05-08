@@ -9,11 +9,20 @@
  ********************************
  */
 
-#include "BtLogger.h"
+#include "../include/BtLogger.h"
 
 
 void Logger::log(LogLevel level, const std::string& message){
-	std::cout<<logLevelStr(level)<<message<<std::endl;
+	if(logfile.is_open()){
+		logfile<<logLevelStr(level)<<message<<std::endl;
+	} else {
+		throw ;
+	}
+}
+
+
+std::shared_ptr<LoggerStream> Logger::log(LogLevel level) {
+	return std::make_shared<LoggerStream> (new LoggerStream(*this, level));
 }
 
 
