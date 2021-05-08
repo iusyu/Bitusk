@@ -10,8 +10,10 @@ OBJS=$(patsubst %.cpp,%.o, $(SRCS))
 $(ARCHIVENAME):$(OBJS)
 	ar rcs $(ARCHIVENAME) *.o
 
-%.o:$(SRCS)
+%.o:%.cpp
+	echo $(SRCS)
 	g++ $(CXXFLAG) $(INCLIDE) -o $@ $<
 
+.PHONY:clean
 clean:
 	rm *.o
