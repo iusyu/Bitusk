@@ -1,13 +1,14 @@
-/*********************************
- * FileName: BtLogger.cpp
- *     Date: 2021-05-05 20:32
- *   Author: sunyi
- *  Version: 0.1
- *
- *   @brief: 日志模块 按照c++的OO设计来搞定。
- *
- ********************************
- */
+/*
+=============================================
+* @brief    : Bt downloader logger 
+* @copyright: Copyright 2021 iusyu
+* @license  : Apache
+* @birth    : 2021-05-01 23:48
+* @author   : sunyi
+* @version  : 0.1.0
+* @revisions: NA
+==============================================
+*/
 
 #include "../include/BtLogger.h"
 
