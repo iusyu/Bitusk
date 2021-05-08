@@ -13,5 +13,11 @@
 
 int main(int argc, char* argv[]) {
 	std::cout<<ErrorCatcher::invalidHashError()<<std::endl;
+
+	std::cout<<ErrorCatcher::invalidMessageError()<<std::endl;
+	std::cout<<ErrorCatcher::invalidParameterError()<<std::endl;
+	std::cout<<ErrorCatcher::invalidSocketError()<<std::endl;
+	std::cout<<ErrorCatcher::invalidTrackerReplyError()<<std::endl;
+	std::cout<<ErrorCatcher::invalidTrackerUrlError()<<std::endl;
 	return 0;
 }
