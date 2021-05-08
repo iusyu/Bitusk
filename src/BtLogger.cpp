@@ -21,8 +21,8 @@ void Logger::log(LogLevel level, const std::string& message){
 }
 
 
-std::shared_ptr<LoggerStream> Logger::log(LogLevel level) {
-	return std::make_shared<LoggerStream> (new LoggerStream(*this, level));
+LoggerStream&& Logger::log(LogLevel level) {
+	return std::move(LoggerStream(*this, level));
 }
 
 

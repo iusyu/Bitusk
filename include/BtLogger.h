@@ -1,10 +1,6 @@
 /*********************************
- * FileName: BtLogger.h
- *     Date: 2021-05-05 20:32
- *   Author: sunyi
- *  Version: 0.1
  *
- *   @brief: 日志模块 按照c++的OO设计来搞定。
+ *   @brief: 日志模块
  *
  ********************************
  */
@@ -21,6 +17,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <memory>
+#include <utility>
+
 
 class Logger;
 class LoggerStream;
@@ -29,31 +28,63 @@ enum LogLevel {
 	TRACE, DEBUG, INFO, WARN, ERROR
 };
 
-
+/* logger的主要实现 */
 class Logger {
 public:
+	Logger(const std::string& filename):logfile(filename) {}
+
+	/*
+	 * @brief: log message and logleve
+	 * @param: LogLevel how important and  message logged
+	 * @ret: void
+	 * @birth: 2021-05-5
+	 */
 	void log(LogLevel level, const std::string& message);
+
+	/*
+	 * @brief: 返回loglevel的字符串
+	 * @param: LogLevel
+	 * @ret: const std::string level string
+	 * @birth: 2021-05-5
+	 */
 	const std::string logLevelStr(LogLevel lv);
-	LoggerStream& log(LogLevel level);
+
+	/*
+	 * @brief: 返回一个字符串流处理各种信息
+	 * @param: LogLevel 
+	 * @ret: LoggerStream&& 使用move semantic
+	 * @birth: 2021-05-5
+	 */
+	LoggerStream&& log(LogLevel level);
 
 private:
-
 	std::ofstream logfile;
-
-	
 };
 
-
+/* LoggerStream提供更多type推导 */
 class LoggerStream {
+	friend class Logger;
 public:
 	~LoggerStream();
+
+	/*
+	 * @brief: 流处理操作符
+	 * @param: typename T& value
+	 * @ret: 还是本流
+	 * @birth: 2021-05-5
+	 */
 	template<typename T>
 	LoggerStream& operator<<(const T& value);
 
 private:
-	friend class Logger;
-	LoggerStream(Logger& lg, LogLevel lv):logger(lg),logleve(lv) {}
 
+	/*
+	 * @brief: 返回一个字符串流处理各种信息
+	 * @param: LogLevel 
+	 * @ret: LoggerStream&& 使用move semantic
+	 * @birth: 2021-05-5
+	 */
+	LoggerStream(Logger& lg, LogLevel lv):logger(lg),logleve(lv) {}
 
 private:
 	Logger& logger;
