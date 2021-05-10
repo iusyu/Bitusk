@@ -1,0 +1,18 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/x86_64-linux-gnu-g++-9",
+      "-c",
+      "-std=c++11",
+      "-Wall",
+      "-I",
+      "../include/",
+      "-o",
+      "BtLogger.o",
+      "BtLogger.cpp"
+    ],
+    "directory": "/home/iusk/Documents/Bitusk/src",
+    "file": "/home/iusk/Documents/Bitusk/src/BtLogger.cpp",
+    "output": "/home/iusk/Documents/Bitusk/src/BtLogger.o"
+  }
+]
