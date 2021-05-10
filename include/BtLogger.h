@@ -32,7 +32,8 @@ enum LogLevel {
 /* logger的主要实现 */
 class Logger {
 public:
-	Logger(const std::string& filename):logfile(filename) {}
+
+	Logger(const std::string& filename):logfile(filename, std::ofstream::app) {}
 
 	/*
 	 * @brief: log message and logleve
@@ -51,12 +52,20 @@ public:
 	const std::string logLevelStr(LogLevel lv);
 
 	/*
+	 * @brief: 返回记录时间
+	 * @param: void
+	 * @ret: const std::string log time
+	 * @birth: 2021-05-5
+	 */
+	const std::string getTime() const;
+
+	/*
 	 * @brief: 返回一个字符串流处理各种信息
 	 * @param: LogLevel 
 	 * @ret: LoggerStream&& 使用move semantic
 	 * @birth: 2021-05-5
 	 */
-	LoggerStream&& log(LogLevel level);
+	LoggerStream log(LogLevel level);
 
 private:
 	std::ofstream logfile;
@@ -67,6 +76,8 @@ class LoggerStream {
 	friend class Logger;
 public:
 	~LoggerStream();
+	LoggerStream(LoggerStream&& ls):stream(std::move(ls.stream)), logger(ls.logger), logleve(ls.logleve) {}
+
 
 	/*
 	 * @brief: 流处理操作符
@@ -75,7 +86,10 @@ public:
 	 * @birth: 2021-05-5
 	 */
 	template<typename T>
-	LoggerStream& operator<<(const T& value);
+	LoggerStream& operator<<(const T& value) {
+		(stream)<<" "<<value;
+		return (*this);
+	}
 
 private:
 
@@ -85,12 +99,14 @@ private:
 	 * @ret: LoggerStream&& 使用move semantic
 	 * @birth: 2021-05-5
 	 */
-	LoggerStream(Logger& lg, LogLevel lv):logger(lg),logleve(lv) {}
+	LoggerStream(Logger& lg, LogLevel lv):logger(lg),logleve(lv)  {
+		//stream << logger.getTime();
+	}
 
 private:
+	std::ostringstream stream;
 	Logger& logger;
 	LogLevel logleve;
-	std::ostringstream stream;
 };
 
 

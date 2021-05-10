@@ -10,38 +10,53 @@
 ==============================================
 */
 
-#include "../include/BtLogger.h"
+#include <ctime>
+
+#include "BtLogger.h"
 
 
 void Logger::log(LogLevel level, const std::string& message){
 	if(logfile.is_open()){
-		logfile<<logLevelStr(level)<<message<<std::endl;
+		logfile<<getTime()<<" "<<logLevelStr(level)<<message<<std::endl;
 	} else {
 		throw ;
 	}
 }
 
 
-LoggerStream&& Logger::log(LogLevel level) {
-	return std::move(LoggerStream(*this, level));
+LoggerStream Logger::log(LogLevel level) {
+	return LoggerStream(*this, level);
 }
 
 
 const std::string Logger::logLevelStr(LogLevel lv) {
 	switch(lv){
 	case TRACE:
-		return "TRACE";
+		return "[TRACE]";
 	case DEBUG:
-		return "DEBUG";
+		return "[DEBUG]";
 	case INFO:
-		return "INFO";
+		return "[INFO]";
 	case WARN:
-		return "WARN";
+		return "[WARN]";
 	case ERROR:
-		return "ERROR";
+		return "[ERROR]";
 	default:
-		break;
+		return "[]";
 	}
+}
+
+
+const std::string Logger::getTime() const{
+	time_t rawTime;
+	struct tm * timeinfo;
+	time(&rawTime);
+	timeinfo = localtime(&rawTime);
+	std::string currentTime {asctime(timeinfo)};
+	std::string::iterator end = currentTime.end() - 1;
+	*end = ' ';
+
+	return currentTime;
 }
 
 
@@ -50,13 +65,6 @@ LoggerStream::~LoggerStream() {
 	if( !message.empty()) {
 		logger.log(logleve,message);
 	}
-}
-
-
-template<typename T>
-LoggerStream& LoggerStream::operator<<(const T& value) {
-	stream<<value;
-	return (*this);
 }
 
 
