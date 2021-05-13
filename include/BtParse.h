@@ -25,12 +25,12 @@
 
 
 /* 种子文件解析中 */
-class Parse {
+class AbsParse {
 public:
-	Parse() = default;
-	Parse(const Parse& ) = delete;
-	Parse(const Parse&&);
-	Parse(const std::string& bf):ifbtstream(bf) {}
+	AbsParse() = default;
+	AbsParse(const AbsParse& ) = delete;
+	AbsParse(const AbsParse&&);
+	AbsParse(const std::string& bf):ifbtstream(bf) {}
 	
 
 	/* Application Programming Interface  */
@@ -60,11 +60,28 @@ private:
 
 
 
-
-
-
-int main(int argc, char* argv[]) {
-	Parse bt("....");
-
+class Parse:public AbsParse{
+public:
 	
-}
+	Parse();
+
+	/*
+	 * @brief: find value with key
+	 * @param: key which to find [const std::string& ]
+	 * @ret: value of key
+	 * @birth: 2021-05-11
+	 */
+	virtual const std::string findKeyValue(const std::string&) override;
+
+	/*
+	 * @brief: find value with key
+	 * @param: key which to find [const std::string& ]
+	 * @ret: value of key
+	 * @birth: 2021-05-11
+	 */
+	virtual std::string::iterator findKeyPos(const std::string&) override;
+
+
+};
+
+
