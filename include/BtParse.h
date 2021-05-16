@@ -55,6 +55,8 @@ struct BittorrentData {
 
 	/* shared file length */
 	unsigned		length;
+
+	std::string 		path;
 	std::map<std::string, std::string> info;
 
 
@@ -63,7 +65,7 @@ struct BittorrentData {
 	 * @md5sum
 	 * @path	 : store the path and name of shared files
 	 */
-	std::map<std::string, std::string> files;
+	std::map<std::string, unsigned long> files;
 
 
 	/* Tracker URL */
@@ -86,6 +88,7 @@ public:
 	static unsigned parseStrLen(strIterator& itr);
 	static std::string parseStr(strIterator& itr);
 	static std::string getSegment(strIterator& itr);
+	static std::pair<std::string, unsigned long> parseDictPair(std::string::iterator&itr);
 };
 
 
@@ -132,7 +135,7 @@ public:
 	virtual void readPiecesHash();
 	virtual void readFileName();
 	virtual void readFileLength();
-	virtual void readLengthPath();
+	virtual void readFilesLengthPath();
 	virtual void readInfoHash();
 	virtual void readPeerId();
 

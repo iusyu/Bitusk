@@ -2,28 +2,13 @@
 #include <string>
 #include <vector>
 #include <iterator>
-
+#include <utility>
 #include "BtParse.h"
 
 
 
 /* struct BittorrentData IMP */
 BittorrentData::BittorrentData() {
-	info["piece_length"] = "";
-	info["pieces"] 	     = "";
-	info["private"]      = "";
-
-	/* single file */
-	info["name"]	     = "";
-	info["length"]	     = "";
-	info["md5sum"] 	     = "";
-
-	/* multifile mode */
-	info["name"]         = "";
-
-	files["length"]      = "";
-	files["path"]        = "";
-	files["md5sum"]	     = "";
 }
 
 
@@ -61,6 +46,16 @@ std::string SegmentParse::parseStr(strIterator& itr) {
 	}
 	return tmp;
 }
+
+
+std::pair<std::string, unsigned long> SegmentParse::parseDictPair(std::string::iterator& itr) {
+	SegmentParse::getSegment(itr);
+	unsigned long len = std::stoul(SegmentParse::getSegment(itr));
+	SegmentParse::getSegment(itr);
+	std::string filepath = SegmentParse::getSegment(itr);
+	return std::make_pair(filepath, len);
+}
+
 
 std::string SegmentParse::getSegment(strIterator& itr) {
 	switch(*itr) {
@@ -128,7 +123,7 @@ void ParseMetaFile::readAnnounceList() {
 
 
 bool ParseMetaFile::readIsMultiFiles() {
-	return MetaFileString.find("5:files") == std::string::npos ;
+	return MetaFileString.find("5:files") != std::string::npos ;
 }
 
 
@@ -136,7 +131,7 @@ void ParseMetaFile::readPieceLength() {
 	sizeType pos = 0;
 	if( (pos = MetaFileString.find("12:piece_length") )!= std::string::npos) {
 		std::string::iterator itr = MetaFileString.begin() + pos;
-		data.info["piece_length"] = SegmentParse::getSegment(itr);
+		data.piece_length = std::stoul(SegmentParse::getSegment(itr));
 	}
 }
 
@@ -148,4 +143,91 @@ void ParseMetaFile::readPiecesHash() {
 		std::string tmp = SegmentParse::getSegment(itr);
 		data.hashStr = SegmentParse::getSegment(itr);
 	}
+}
+
+
+void ParseMetaFile::readFileName() {
+	sizeType pos = 0;
+	if( (pos = MetaFileString.find("4:name")) != std::string::npos ) {
+		std::string::iterator itr = MetaFileString.begin() + pos;
+		std::string tmp = SegmentParse::getSegment(itr);
+		data.name = SegmentParse::getSegment(itr);
+	}
+}
+
+
+void ParseMetaFile::readFileLength() {
+	sizeType pos = 0;
+	if( readIsMultiFiles() ) {
+
+		// many files need to read
+		readFilesLengthPath();
+	} else {
+		if( (pos = MetaFileString.find("6:length")) != std::string::npos ) {
+			std::string::iterator itr = MetaFileString.begin() + pos;
+			std::string tmp = SegmentParse::getSegment(itr);
+			unsigned long len = std::stoul( SegmentParse::getSegment(itr) );
+
+			std::string filepath = SegmentParse::getSegment(itr);
+
+			data.files[filepath] = len;
+			
+		}
+	}
+}
+
+void ParseMetaFile::readFilesLengthPath() {
+	sizeType pos = 0;
+	std::vector<char> stack;
+	// TODO check position isn't right
+	std::string::iterator itr = MetaFileString.begin() + MetaFileString.find("5:files") + 7;
+	do{
+		switch( *itr ) {
+			case 'd':
+				stack.push_back(*itr);
+				itr++;
+				data.files.insert(SegmentParse::parseDictPair(itr));
+				break;
+			case 'l':
+				stack.push_back(*itr);
+				itr++;
+				break;
+			case 'e':
+				itr++;
+				stack.pop_back();
+				break;
+		}
+	}while(!stack.empty());
+}
+
+
+void ParseMetaFile::readInfoHash() {
+	std::string::iterator start = MetaFileString.begin() + MetaFileString.find("4:info") + 6;
+	std::string::iterator itr = start;
+	std::vector<char> stack;
+	// TODO debug重灾区
+	do {
+		switch( *itr ) {
+			case 'd':
+				stack.push_back( *itr);
+				itr++;
+				SegmentParse::getSegment(itr);
+				break;
+			case 'l':
+				stack.push_back(*itr);
+				itr++;
+				SegmentParse::getSegment(itr);
+				break;
+			case 'e':
+				stack.pop_back();
+				itr++;
+				SegmentParse::getSegment(itr);
+				break;
+			default:
+				SegmentParse::getSegment(itr);
+				break;
+				
+		} 
+
+	}while( !stack.empty() );
 }
