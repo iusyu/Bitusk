@@ -48,6 +48,13 @@ struct BittorrentData {
 	 * @name 	 : store all shared files' directory name
 	 * @files	 : have a directory value specifing in 'std::map<std::string, std::string> files '
 	 * */
+	unsigned 		piece_length = 0;
+	std::string 		pieces;
+	std::string 		bprivate;
+	std::string		name;
+
+	/* shared file length */
+	unsigned		length;
 	std::map<std::string, std::string> info;
 
 
@@ -65,6 +72,9 @@ struct BittorrentData {
 
 	/* Tracker URL list */
 	std::vector<std::string> announceList;
+
+	/* Hash Str */
+	std::string hashStr;
 };
 
 
@@ -114,13 +124,12 @@ public:
 	
 	virtual const std::string& getString(const std::string& );
 
-private:
 	void parseIt();
 	bool checkParse();
 	virtual void readAnnounceList();
 	virtual bool readIsMultiFiles();
 	virtual void readPieceLength();
-	virtual void readPieces();
+	virtual void readPiecesHash();
 	virtual void readFileName();
 	virtual void readFileLength();
 	virtual void readLengthPath();

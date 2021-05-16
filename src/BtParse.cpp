@@ -136,7 +136,16 @@ void ParseMetaFile::readPieceLength() {
 	sizeType pos = 0;
 	if( (pos = MetaFileString.find("12:piece_length") )!= std::string::npos) {
 		std::string::iterator itr = MetaFileString.begin() + pos;
-		
+		data.info["piece_length"] = SegmentParse::getSegment(itr);
+	}
+}
 
+
+void ParseMetaFile::readPiecesHash() {
+	sizeType pos = 0;
+	if( (pos = MetaFileString.find("6:pieces")) != std::string::npos) {
+		std::string::iterator itr = MetaFileString.begin() + pos;
+		std::string tmp = SegmentParse::getSegment(itr);
+		data.hashStr = SegmentParse::getSegment(itr);
 	}
 }
