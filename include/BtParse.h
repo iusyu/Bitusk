@@ -22,7 +22,7 @@
 #include <vector>
 #include <map>
 
-class ParseBittorrentFile;
+class ParseMetaFile;
 
 /* Bittorrent File keyword struct */
 struct BittorrentData {
@@ -68,70 +68,64 @@ struct BittorrentData {
 };
 
 
-/* using abstract factory method */
-class AbsParseMethod {
+/* parse four data type */
+class SegmentParse {
 public:
-	virtual AbsParseMethod* getParseMethod(const std::string&);
-	virtual ~AbsParseMethod();
-private:
-	BittorrentData* str;
+	typedef std::string::iterator strIterator;
+	static std::string parseInt(strIterator& itr);
+	static unsigned parseStrLen(strIterator& itr);
+	static std::string parseStr(strIterator& itr);
+	static std::string getSegment(strIterator& itr);
 };
 
 
-/* inherit from AbsParseMethod */
-class PAnnounce: public AbsParseMethod {
+/* using template method */
+template<typename T>
+class BaseParse {
 public:
-	virtual AbsParseMethod* getParseMethod(const std::string&) override;
-	
+	typedef T valueType;
+	BaseParse() = delete;
+	BaseParse(const BaseParse& ) = delete;
 
-	
+	virtual valueType parsing(const std::string&, const std::string&) = 0;
+	virtual ~BaseParse();
+
 };
 
 
-/* different method of parse keyvalue */
-
-class AbsParseInfo{
+/* parse info keyword */
+class ParseInfo:public BaseParse<std::map<std::string,std::string>> {
 public:
-	typedef std::map<std::string,std::string> infoDic;
-
-	AbsParseInfo() = delete;
-	AbsParseInfo(const AbsParseInfo&) = delete;
-
-	AbsParseInfo(ParseBittorrentFile* p):pbf(p) {}
-	
-	virtual infoDic parseInfo() = 0;
-	virtual ~AbsParseInfo();
-	
-private:
-	ParseBittorrentFile* pbf;
+	virtual valueType parsing(const std::string&, const std::string&) override ;
+	valueType parseInfo(const std::string& srcStr, const std::string& key);
 };
 
 
-class ParseInfo:public AbsParseInfo {
-public:
-	ParseInfo(ParseBittorrentFile* p):AbsParseInfo(p) {}
-	
-
-	virtual infoDic parseInfo() override ;
-};
 
 
 /* the basic tools for parse String */
-class ParseBittorrentFile {
+class ParseMetaFile {
 public:
-	ParseBittorrentFile() = delete;
-	ParseBittorrentFile(const ParseBittorrentFile&) = delete;
-	ParseBittorrentFile(const std::string& );
+	using sizeType = std::string::size_type;
+	ParseMetaFile() = delete;
+	ParseMetaFile(const ParseMetaFile&) = delete;
+	ParseMetaFile(const std::string& );
 	virtual const std::string& get();
 	
 	virtual const std::string& getString(const std::string& );
 
 private:
-	virtual const std::string& getInfoOf(const std::string&);
-	virtual const std::string& getFilesOf(const std::string&);
-	virtual const std::vector<std::string>& getListOf(const std::string&);
 	void parseIt();
 	bool checkParse();
+	virtual void readAnnounceList();
+	virtual bool readIsMultiFiles();
+	virtual void readPieceLength();
+	virtual void readPieces();
+	virtual void readFileName();
+	virtual void readFileLength();
+	virtual void readLengthPath();
+	virtual void readInfoHash();
+	virtual void readPeerId();
 
 
 
@@ -139,8 +133,7 @@ private:
 
 private:
 	BittorrentData data;
-	std::string bittorrentFileString;
-	std::map<std::string,std::shared_ptr<AbsParseMethod>> parseMethod;
+	std::string MetaFileString;
 };
 
 
