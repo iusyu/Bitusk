@@ -123,7 +123,6 @@ public:
 	ParseMetaFile() = delete;
 	ParseMetaFile(const ParseMetaFile&) = delete;
 	ParseMetaFile(const std::string& );
-	virtual const std::string& get();
 	
 	virtual const std::string& getString(const std::string& );
 
@@ -149,7 +148,15 @@ private:
 };
 
 
+// // // // // // // // // // // // // 
+//
+//NEW DESIGN OF PARSE IMP WITH TMP
+//
+// // // // // // // // // // // // // 
 
-
+struct INT_tag {};
+struct STR_tag {};
+struct DIC_tag {};
+struct LIS_tag {};
 
 

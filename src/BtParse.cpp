@@ -93,8 +93,17 @@ ParseMetaFile::ParseMetaFile(const std::string& fileName) {
 }
 
 
+const std::string& ParseMetaFile::getString(const std::string& key) {
+}
+
 void ParseMetaFile::parseIt() {
-	
+	readAnnounceList();
+	readIsMultiFiles();
+	readFileLength();
+	readPieceLength();
+	readFilesLengthPath();
+	readInfoHash();
+	readPeerId();
 }
 
 
@@ -177,7 +186,6 @@ void ParseMetaFile::readFileLength() {
 }
 
 void ParseMetaFile::readFilesLengthPath() {
-	sizeType pos = 0;
 	std::vector<char> stack;
 	// TODO check position isn't right
 	std::string::iterator itr = MetaFileString.begin() + MetaFileString.find("5:files") + 7;
