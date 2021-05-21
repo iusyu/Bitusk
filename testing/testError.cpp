@@ -10,6 +10,8 @@
 #include <iostream>
 #include "BtError.h"
 #include "BtLogger.h"
+#include "BtParse.h"
+
 
 // @brief test BtError.h
 
@@ -28,5 +30,9 @@ int main(int argc, char* argv[]) {
 	logger.log(ERROR)<<ErrorCatcher::invalidParameterError();
 	logger.log(ERROR)<<ErrorCatcher::invalidSocketError()<<"port:"<<45;
 	logger.log(INFO)<<ErrorCatcher::invalidSocketError()<<"port:"<<45;
+
+	ParseMetaFile btfile("./bt.bittorrent");
+	btfile.checkParse();
+	
 	return 0;
 }
