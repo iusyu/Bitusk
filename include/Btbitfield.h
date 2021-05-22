@@ -18,7 +18,7 @@
 class Bitmap{
 public:
 	Bitmap();
-	Bitmap(std::size_t b):validBits(b),bitfieldLength(validBits/8 +1), bits(new char[bitfieldLength]) {}
+	Bitmap(std::size_t);
 	Bitmap(const Bitmap&) = delete;
 	Bitmap& setBit(size_t indx);
 	Bitmap& setBitOn(size_t indx);
@@ -27,8 +27,8 @@ public:
 	Bitmap& setAllOne();
 
 	bool getBitStatus(size_t indx);
-	std::size_t countOffBit() const;
-	std::size_t countOnBit() const;
+	std::size_t countZeroBit() const;
+	std::size_t countOneBit() const;
 	Bitmap& display() const;
 	bool operator==(const Bitmap&);
 
@@ -40,5 +40,8 @@ private:
 	std::size_t bitfieldLength;
 
 	std::unique_ptr<char[]> bits;
+
+	std::size_t zeroBitsNumber;
+	std::size_t oneBitsNumber;
 
 };
