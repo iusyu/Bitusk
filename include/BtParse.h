@@ -6,7 +6,7 @@
 * @birth    : 2021-05-01 23:48
 * @author   : sunyi
 * @version  : 0.1.0
-* @revisions: 2021-05-15
+* @revisions: 2021-05-22
 ==============================================
 */
 
@@ -48,13 +48,13 @@ struct BittorrentData {
 	 * @name 	 : store all shared files' directory name
 	 * @files	 : have a directory value specifing in 'std::map<std::string, std::string> files '
 	 * */
-	unsigned 		piece_length = 0;
-	std::string 		pieces;
-	std::string 		bprivate;
-	std::string		name;
+	unsigned 		 piece_length = 0;
+	std::vector<std::string> pieces;
+	std::string 		 bprivate;
+	std::string		 name;
 
 	/* shared file length */
-	unsigned		length;
+	unsigned		 length;
 
 	std::string 		path;
 	std::map<std::string, std::string> info;
@@ -64,6 +64,8 @@ struct BittorrentData {
 	 * @length 	 : shared file length, Unit is Byte
 	 * @md5sum
 	 * @path	 : store the path and name of shared files
+	 * key:   file path
+	 * value: file length
 	 */
 	std::map<std::string, unsigned long> files;
 
@@ -77,6 +79,9 @@ struct BittorrentData {
 
 	/* Hash Str */
 	std::string hashStr;
+
+	/* Peer ID */
+	std::string peer_id;
 };
 
 
@@ -84,10 +89,10 @@ struct BittorrentData {
 class SegmentParse {
 public:
 	typedef std::string::iterator strIterator;
-	static std::string parseInt(strIterator& itr);
-	static unsigned parseStrLen(strIterator& itr);
-	static std::string parseStr(strIterator& itr);
-	static std::string getSegment(strIterator& itr);
+	static std::string 		parseInt(strIterator& itr);
+	static unsigned 		parseStrLen(strIterator& itr);
+	static std::string 		parseStr(strIterator& itr);
+	static std::string 		getSegment(strIterator& itr);
 	static std::pair<std::string, unsigned long> parseDictPair(std::string::iterator&itr);
 };
 
@@ -123,11 +128,47 @@ public:
 	ParseMetaFile() = delete;
 	ParseMetaFile(const ParseMetaFile&) = delete;
 	ParseMetaFile(const std::string& );
-	
-	virtual const std::string& getString(const std::string& );
 
-	void parseIt();
+	bool isMultiFiles() const;
+	
+	const std::vector<std::string>& getAnnounceList() const;
+	const std::string& 		getAnnounce() const;
+
+
+	const unsigned     		getPieceLength() const;
+	const std::vector<std::string>& getPieceHash() const;
+	
+
+	/*
+	 * @breif 
+	 * @return if multi files it will return folder name;
+	 *         if single file it will return file name;
+	 */
+	const std::vector<std::string>&  getFileName() const;
+
+	/*
+	 * @breif
+	 * @return if multifiles it will return file path and length keyvalue pair
+	 * 	   if single     it will return empty data;
+	 */
+	const std::map<std::string,unsigned long>& getFilePathAndLength() const;
+
+	/*
+	 * @breif  Info_hash will be used when connecting Tracker and Peer
+	 * @return info hash
+	 */
+	const std::string& getInfoHash() const;
+
+	/*
+	 * @breif  peer_id
+	 * @return Peer ID to connecting PEER
+	 */
+	const std::string& getPeerId() const;
+
 	bool checkParse();
+	void parseIt();
+
+private:
 	virtual void readAnnounceList();
 	virtual bool readIsMultiFiles();
 	virtual void readPieceLength();
@@ -137,9 +178,6 @@ public:
 	virtual void readFilesLengthPath();
 	virtual void readInfoHash();
 	virtual void readPeerId();
-
-
-
 
 
 private:

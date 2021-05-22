@@ -90,11 +90,45 @@ ParseMetaFile::ParseMetaFile(const std::string& fileName) {
 		std::string tmpStr{std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>()};
 		MetaFileString = tmpStr;
 	}
+
+	parseIt();
 }
 
 
-const std::string& ParseMetaFile::getString(const std::string& key) {
+const std::vector<std::string>& ParseMetaFile::getAnnounceList() const {
+	return data.announceList;
 }
+
+
+const unsigned ParseMetaFile::getPieceLength() const {
+	return data.piece_length;
+}
+
+
+const std::vector<std::string>& ParseMetaFile::getPieceHash() const {
+	return data.pieces;
+}
+
+
+const std::vector<std::string>& ParseMetaFile::getFileName() const {
+	return data.name;
+}
+
+
+const std::map<std::string, unsigned long>& ParseMetaFile::getFilePathAndLength() const {
+	return data.files;
+}
+
+
+const std::string& ParseMetaFile::getInfoHash() const {
+	return data.hashStr;
+}
+
+
+const std::string& ParseMetaFile::getPeerId() const {
+	return data.peer_id;
+}
+
 
 void ParseMetaFile::parseIt() {
 	readAnnounceList();
