@@ -39,6 +39,7 @@ private:
 	// Allocated bits;
 	std::size_t bitfieldLength;
 
+	// If just need 1 Byte ?
 	std::unique_ptr<char[]> bits;
 
 	std::size_t zeroBitsNumber;
