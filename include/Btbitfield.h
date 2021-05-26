@@ -15,27 +15,11 @@
 #include <iostream>
 #include <memory>
 
-static const unsigned char bitOn[8]   = {0b10000000,
-					0b01000000,
-					0b00100000,
-					0b00010000,
-					0b00001000,
-					0b00000100,
-					0b00000010,
-					0b00000001};
-static const unsigned char bitMask[8] ={0b01111111,
-					0b10111111,
-					0b11011111,
-					0b11101111,
-					0b11110111,
-					0b11111011,
-					0b11111101,
-					0b11111110};
-
-static const unsigned char bitAllOn  = 0b11111111;
-static const unsigned char bitAllOff = 0b00000000;
+// unnessary 
 
 class Bitmap{
+friend std::ostream& operator<<(std::ostream&, const Bitmap&);
+friend std::istream& operator>>(std::istream&, Bitmap&);
 public:
 	Bitmap();
 	Bitmap(std::size_t);
@@ -51,13 +35,14 @@ public:
 	bool getBitStatus(size_t indx) ;
 	std::size_t countZeroBit() const;
 	std::size_t countOneBit() const;
-	Bitmap& display() const;
 	bool operator==(const Bitmap&);
 
 	~Bitmap();
 private:
 
 	Bitmap& getPos(size_t ,size_t *, size_t*);
+	Bitmap& displayUnsignedChar(unsigned char P);
+
 
 private:
 	// Used bits;
