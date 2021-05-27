@@ -25,12 +25,20 @@ public:
 	Bitmap(std::size_t);
 	Bitmap(std::size_t, std::size_t, std::size_t);
 	Bitmap(const Bitmap&) = delete;
+
+	/* Reverse bits */
 	Bitmap& reverseBit(size_t indx);
 	Bitmap& reverseAllBit();
+
+	/* set a bit */
 	Bitmap& setBitOn(size_t indx);
 	Bitmap& setBitOff(size_t indx);
 	Bitmap& setAllZero();
 	Bitmap& setAllOne();
+
+	/* set bits range */
+	Bitmap& setBitsOn(size_t, size_t);
+	Bitmap& setBitsOff(size_t, size_t);
 
 	bool getBitStatus(size_t indx) ;
 	std::size_t countZeroBit() const;

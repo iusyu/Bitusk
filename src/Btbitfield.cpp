@@ -87,7 +87,7 @@ Bitmap& Bitmap::setBitOff(size_t indx) {
 Bitmap& Bitmap::setAllZero() {
 
 	for( size_t i = 0; i < bitfieldLength / 8; i++ ) {
-		pbits[i] = bitAllOff;
+		pbits[i] = 0b00000000;
 	}
 	return *this;
 }
@@ -95,7 +95,19 @@ Bitmap& Bitmap::setAllZero() {
 
 Bitmap& Bitmap::setAllOne() {
 	for( size_t i = 0; i < bitfieldLength / 8; i++ ) {
-		pbits[i] = bitAllOn;
+		pbits[i] = 0b11111111;
+	}
+	return *this;
+}
+
+
+Bitmap& Bitmap::setBitsOn(size_t start, size_t end) {
+	if( start < validBits && end > start && end < validBits ) {
+		throw ;
+	
+	}
+	for( int a = start; a < end; a++ ) {
+		setBitOn(a);
 	}
 	return *this;
 }
@@ -130,7 +142,8 @@ bool Bitmap::operator==( const Bitmap& bitmap) {
 	if( this->validBits != bitmap.validBits ) {
 		throw;
 	}
-	for(
+
+	return false;
 }
 
 
@@ -147,7 +160,9 @@ Bitmap& Bitmap::getPos(size_t idx, size_t* charBitPos, size_t* charIndx) {
 	return *this;
 }
 
-
+/*
+ * How to unify the format of output
+ */
 std::ostream& operator<<(std::ostream& os, const Bitmap& bitmap) {
 	for( int i = 0; i < bitmap.bitfieldLength / 8; i++ ) {
 		for( int ci = 0b100000000; ci > 0; ci /= 2 ) {
@@ -158,15 +173,22 @@ std::ostream& operator<<(std::ostream& os, const Bitmap& bitmap) {
 			}
 		}
 		os<<" ";
+		/***********************
 		if( i % 4 == 0 ) {
 			os<<std::endl;
 		}
+		************************/
 	}
 	return os;
 }
 
 
 std::istream& operator>>(std::istream& is, Bitmap& bitmap) {
+	/**********
+	 * TODO
+	 **********/
+	unsigned char tmp;
+	is >> tmp;
 	return is;
 }
 
