@@ -30,9 +30,19 @@ struct BittorrentData {
 
 	bool empty() const ;
 
+
+	/* Announce Key */
+	/* Tracker URL */
+	std::string announce;
+	std::vector<std::string> announceList;
+
+	/* Select */
+	std::string creationDate;
+	std::string comment;
+	std::string createBy;
+
 	/* keyword 'info' has value of diction 
 	 * 
-	 * to get keyvalue by 'info["name"]'
 	 *
 	 * common keyword contained
 	 * @piece_length : length of every piece
@@ -48,17 +58,13 @@ struct BittorrentData {
 	 * @name 	 : store all shared files' directory name
 	 * @files	 : have a directory value specifing in 'std::map<std::string, std::string> files '
 	 * */
+	std::string		 name;
 	unsigned 		 piece_length = 0;
 	std::vector<std::string> pieces;
 	std::string 		 bprivate;
-	std::string		 name;
 
-	/* shared file length */
+	/* If Single File will be length */
 	unsigned		 length;
-
-	std::string 		path;
-	std::map<std::string, std::string> info;
-
 
 	/* keyword 'info' has keyword 'files' in multifile mode
 	 * @length 	 : shared file length, Unit is Byte
@@ -70,17 +76,8 @@ struct BittorrentData {
 	std::map<std::string, unsigned long> files;
 
 
-	/* Tracker URL */
-	std::string announce;
-
-
-	/* Tracker URL list */
-	std::vector<std::string> announceList;
-
-	/* Hash Str */
+	/* Key word about peers */
 	std::string hashStr;
-
-	/* Peer ID */
 	std::string peer_id;
 };
 
@@ -130,6 +127,8 @@ public:
 	ParseMetaFile(const std::string& );
 
 	bool isMultiFiles() const;
+
+	const BittorrentData& getData() const;
 	
 	const std::vector<std::string>& getAnnounceList() const;
 	const std::string& 		getAnnounce() const;
@@ -144,7 +143,7 @@ public:
 	 * @return if multi files it will return folder name;
 	 *         if single file it will return file name;
 	 */
-	const std::vector<std::string>&  getFileName() const;
+	const std::string& getFileName() const;
 
 	/*
 	 * @breif
@@ -182,8 +181,12 @@ private:
 
 private:
 	BittorrentData data;
+
+	// TODO 编码方式 选择
 	std::string MetaFileString;
 };
+
+std::ostream& operator<<(std::ostream&, const BittorrentData&);
 
 
 // // // // // // // // // // // // // 

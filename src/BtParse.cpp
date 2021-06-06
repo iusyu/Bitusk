@@ -3,23 +3,29 @@
 #include <vector>
 #include <iterator>
 #include <utility>
+#include <functional>
+#include <algorithm>
+
 #include "BtParse.h"
 
 
 
 /* struct BittorrentData IMP */
-BittorrentData::BittorrentData() {
+BittorrentData::BittorrentData() 
+{
 }
 
 
-bool BittorrentData::empty() const {
-	return info.empty();
+bool BittorrentData::empty() const 
+{
+	return announce.empty() || name.empty();
 }
 
 
 /* class SegmentParse IMP */
 
-std::string SegmentParse::parseInt(strIterator& itr) {
+std::string SegmentParse::parseInt(strIterator& itr) 
+{
 	std::string tmp;
 	for(; *itr != 'e'; itr++ ) {
 		tmp.push_back(*itr);
@@ -28,7 +34,8 @@ std::string SegmentParse::parseInt(strIterator& itr) {
 	return tmp;
 }
 
-unsigned SegmentParse::parseStrLen(strIterator& itr) {
+unsigned SegmentParse::parseStrLen(strIterator& itr) 
+{
 	std::string tmp;
 	for(; *itr != ':'; itr++) {
 		tmp.push_back(*itr);
@@ -38,7 +45,8 @@ unsigned SegmentParse::parseStrLen(strIterator& itr) {
 }
 
 
-std::string SegmentParse::parseStr(strIterator& itr) {
+std::string SegmentParse::parseStr(strIterator& itr) 
+{
 	std::string tmp;
 	unsigned len = parseStrLen(itr);
 	for( size_t i = 0; i < len; i++ ){
@@ -48,7 +56,8 @@ std::string SegmentParse::parseStr(strIterator& itr) {
 }
 
 
-std::pair<std::string, unsigned long> SegmentParse::parseDictPair(std::string::iterator& itr) {
+std::pair<std::string, unsigned long> SegmentParse::parseDictPair(std::string::iterator& itr) 
+{
 	SegmentParse::getSegment(itr);
 	unsigned long len = std::stoul(SegmentParse::getSegment(itr));
 	SegmentParse::getSegment(itr);
@@ -57,7 +66,8 @@ std::pair<std::string, unsigned long> SegmentParse::parseDictPair(std::string::i
 }
 
 
-std::string SegmentParse::getSegment(strIterator& itr) {
+std::string SegmentParse::getSegment(strIterator& itr) 
+{
 	switch(*itr) {
 		case 'i':
 			return parseInt(++itr);
@@ -68,14 +78,16 @@ std::string SegmentParse::getSegment(strIterator& itr) {
 
 
 /* class ParseInfo IMP */
-ParseInfo::valueType ParseInfo::parsing(const std::string& btFile, const std::string& key = "") {
+ParseInfo::valueType ParseInfo::parsing(const std::string& btFile, const std::string& key = "") 
+{
 	return parseInfo(btFile, key);
 }
 
 
-ParseInfo::valueType ParseInfo::parseInfo(const std::string& srcStr, const std::string& key) {
+ParseInfo::valueType ParseInfo::parseInfo(const std::string& srcStr, const std::string& key) 
+{
 	BaseParse::valueType dic;
-	auto itr = srcStr.begin();
+	//auto itr = srcStr.begin();
 	srcStr.find("5:files");
 	
 	return dic;
@@ -84,7 +96,8 @@ ParseInfo::valueType ParseInfo::parseInfo(const std::string& srcStr, const std::
 
 
 /* class ParseMetaFile IMP */
-ParseMetaFile::ParseMetaFile(const std::string& fileName) {
+ParseMetaFile::ParseMetaFile(const std::string& fileName) 
+{
 	std::ifstream f(fileName);
 	if(f) {
 		std::string tmpStr{std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>()};
@@ -95,42 +108,56 @@ ParseMetaFile::ParseMetaFile(const std::string& fileName) {
 }
 
 
-const std::vector<std::string>& ParseMetaFile::getAnnounceList() const {
+const BittorrentData& ParseMetaFile::getData() const
+{
+	return data;
+}
+
+
+const std::vector<std::string>& ParseMetaFile::getAnnounceList() const 
+{
 	return data.announceList;
 }
 
 
-const unsigned ParseMetaFile::getPieceLength() const {
+const unsigned ParseMetaFile::getPieceLength() const 
+{
 	return data.piece_length;
 }
 
 
-const std::vector<std::string>& ParseMetaFile::getPieceHash() const {
+const std::vector<std::string>& ParseMetaFile::getPieceHash() const 
+{
 	return data.pieces;
 }
 
 
-const std::vector<std::string>& ParseMetaFile::getFileName() const {
+const std::string& ParseMetaFile::getFileName() const 
+{
 	return data.name;
 }
 
 
-const std::map<std::string, unsigned long>& ParseMetaFile::getFilePathAndLength() const {
+const std::map<std::string, unsigned long>& ParseMetaFile::getFilePathAndLength() const 
+{
 	return data.files;
 }
 
 
-const std::string& ParseMetaFile::getInfoHash() const {
+const std::string& ParseMetaFile::getInfoHash() const 
+{
 	return data.hashStr;
 }
 
 
-const std::string& ParseMetaFile::getPeerId() const {
+const std::string& ParseMetaFile::getPeerId() const 
+{
 	return data.peer_id;
 }
 
 
-void ParseMetaFile::parseIt() {
+void ParseMetaFile::parseIt() 
+{
 	readAnnounceList();
 	readIsMultiFiles();
 	readFileLength();
@@ -141,12 +168,14 @@ void ParseMetaFile::parseIt() {
 }
 
 
-bool ParseMetaFile::checkParse() {
+bool ParseMetaFile::checkParse() 
+{
 	return data.empty();
 }
 
 
-void ParseMetaFile::readAnnounceList() {
+void ParseMetaFile::readAnnounceList() 
+{
 	std::string::size_type pos = 0;
 	if( (pos = MetaFileString.find("13:announce-list")) == std::string::npos){
 		if( (pos = MetaFileString.find("8:announce") )!= std::string::npos)  {
@@ -165,12 +194,14 @@ void ParseMetaFile::readAnnounceList() {
 }
 
 
-bool ParseMetaFile::readIsMultiFiles() {
+bool ParseMetaFile::readIsMultiFiles() 
+{
 	return MetaFileString.find("5:files") != std::string::npos ;
 }
 
 
-void ParseMetaFile::readPieceLength() {
+void ParseMetaFile::readPieceLength() 
+{
 	sizeType pos = 0;
 	if( (pos = MetaFileString.find("12:piece_length") )!= std::string::npos) {
 		std::string::iterator itr = MetaFileString.begin() + pos;
@@ -179,7 +210,8 @@ void ParseMetaFile::readPieceLength() {
 }
 
 
-void ParseMetaFile::readPiecesHash() {
+void ParseMetaFile::readPiecesHash() 
+{
 	sizeType pos = 0;
 	if( (pos = MetaFileString.find("6:pieces")) != std::string::npos) {
 		std::string::iterator itr = MetaFileString.begin() + pos;
@@ -189,7 +221,8 @@ void ParseMetaFile::readPiecesHash() {
 }
 
 
-void ParseMetaFile::readFileName() {
+void ParseMetaFile::readFileName() 
+{
 	sizeType pos = 0;
 	if( (pos = MetaFileString.find("4:name")) != std::string::npos ) {
 		std::string::iterator itr = MetaFileString.begin() + pos;
@@ -199,7 +232,8 @@ void ParseMetaFile::readFileName() {
 }
 
 
-void ParseMetaFile::readFileLength() {
+void ParseMetaFile::readFileLength() 
+{
 	sizeType pos = 0;
 	if( readIsMultiFiles() ) {
 
@@ -219,7 +253,8 @@ void ParseMetaFile::readFileLength() {
 	}
 }
 
-void ParseMetaFile::readFilesLengthPath() {
+void ParseMetaFile::readFilesLengthPath() 
+{
 	std::vector<char> stack;
 	// TODO check position isn't right
 	std::string::iterator itr = MetaFileString.begin() + MetaFileString.find("5:files") + 7;
@@ -243,7 +278,8 @@ void ParseMetaFile::readFilesLengthPath() {
 }
 
 
-void ParseMetaFile::readInfoHash() {
+void ParseMetaFile::readInfoHash() 
+{
 	std::string::iterator start = MetaFileString.begin() + MetaFileString.find("4:info") + 6;
 	std::string::iterator itr = start;
 	std::vector<char> stack;
@@ -272,4 +308,32 @@ void ParseMetaFile::readInfoHash() {
 		} 
 
 	}while( !stack.empty() );
+
+	std::string tmp {start, itr};
+	std::size_t hashValue = std::hash<std::string>{}(tmp);
+	data.hashStr = std::to_string(hashValue);
+}
+
+
+std::ostream& operator<<(std::ostream& os, const BittorrentData& metaFile)
+{
+	os<<"Announce:"<<metaFile.announce<<std::endl;
+	os<<"AnnounceList:"<<std::endl;
+	std::for_each(metaFile.announceList.begin(), metaFile.announceList.end(), 
+			[&](const std::string& url) {os<<url<<std::endl; });
+	os<<"CreationDate:"<<metaFile.creationDate<<std::endl;
+	os<<"Comment:"<<metaFile.comment<<std::endl;
+	os<<"Name Or Path:"<<metaFile.name<<std::endl;
+	os<<"Piece Length:"<<metaFile.piece_length<<std::endl;
+	os<<"Pieces Hash:"<<std::endl;
+	std::for_each(metaFile.pieces.begin(), metaFile.pieces.end(), 
+			[&](const std::string& pp){ os<<pp<< " "; });
+	os<<"File Length:"<<metaFile.length<<std::endl;
+	os<<"Files:"<<std::endl;
+	std::for_each(metaFile.files.begin(), metaFile.files.end(), 
+			[&](const std::pair<std::string, unsigned long>& file){ 
+			os<<file.first<< ": "<< file.second <<std::endl; });
+	os<<"Hash String:"<<metaFile.hashStr<<std::endl;
+	os<<"Peer Id:"<<metaFile.peer_id<<std::endl;
+	return os;
 }
