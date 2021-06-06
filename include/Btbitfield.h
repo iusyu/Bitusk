@@ -18,8 +18,10 @@
 // unnessary 
 
 class Bitmap{
+
 friend std::ostream& operator<<(std::ostream&, const Bitmap&);
 friend std::istream& operator>>(std::istream&, Bitmap&);
+
 public:
 	Bitmap();
 	Bitmap(std::size_t);
@@ -75,3 +77,10 @@ private:
 
 std::ostream& operator<<(std::ostream& , const Bitmap&);
 std::istream& operator>>(std::istream&, Bitmap&);
+
+
+
+
+
+
+

@@ -16,6 +16,7 @@
 Bitmap::Bitmap():validBits(0),bitfieldLength(0),zeroBitsNumber(0),oneBitsNumber(0) {
 }
 
+
 Bitmap::Bitmap(std::size_t b):validBits(b),bitfieldLength(validBits/8 +1), bits(new unsigned char[bitfieldLength]) {
 	setAllZero();
 	zeroBitsNumber = validBits;
