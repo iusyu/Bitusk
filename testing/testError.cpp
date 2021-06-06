@@ -33,6 +33,10 @@ int main(int argc, char* argv[]) {
 
 	ParseMetaFile btfile("./bt.bittorrent");
 	btfile.checkParse();
+	logger.log(TRACE)<<	btfile.getAnnounce();
+	logger.log(TRACE)<<	btfile.getPieceLength();
+	logger.log(TRACE)<< 	btfile.getInfoHash();
+	logger.log(TRACE)<<	btfile.getFilePathAndLength();
 	
 	return 0;
 }
