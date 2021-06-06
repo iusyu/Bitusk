@@ -23,7 +23,6 @@ bool BittorrentData::empty() const
 
 
 /* class SegmentParse IMP */
-
 std::string SegmentParse::parseInt(strIterator& itr) 
 {
 	std::string tmp;
@@ -32,16 +31,6 @@ std::string SegmentParse::parseInt(strIterator& itr)
 	}
 
 	return tmp;
-}
-
-unsigned SegmentParse::parseStrLen(strIterator& itr) 
-{
-	std::string tmp;
-	for(; *itr != ':'; itr++) {
-		tmp.push_back(*itr);
-	}
-	itr++;
-	return std::stoul(tmp,NULL);
 }
 
 
@@ -53,6 +42,17 @@ std::string SegmentParse::parseStr(strIterator& itr)
 		tmp.push_back(*itr++);
 	}
 	return tmp;
+}
+
+
+unsigned SegmentParse::parseStrLen(strIterator& itr) 
+{
+	std::string tmp;
+	for(; *itr != ':'; itr++) {
+		tmp.push_back(*itr);
+	}
+	itr++;
+	return std::stoul(tmp,NULL);
 }
 
 
@@ -158,6 +158,7 @@ const std::string& ParseMetaFile::getPeerId() const
 
 void ParseMetaFile::parseIt() 
 {
+	// TODO arrange it
 	readAnnounceList();
 	readIsMultiFiles();
 	readFileLength();
