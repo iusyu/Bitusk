@@ -24,6 +24,8 @@
 #include <bitset>
 #include <list>
 
+
+
 template <typename T, std::size_t N = 1024>
 class buffer {
 public:
@@ -44,6 +46,10 @@ struct RequestPiece{
 
 template<std::size_t N>
 class Peer{
+	friend class MessageGenerator;
+	friend class MessageGeneratorImp;
+	friend std::ostream& operator<<(std::ostream& , const Peer<N>& );
+
 public:
 	enum class PeerState { Initial, HalfShaked, HandShaked, ReceivedBitfield, SendBitfield, Data, Closing };
 	enum class DataState { am_choking, am_interested, peer_choking, peer_interested};
@@ -75,8 +81,49 @@ public:
 	std::list<RequestPiece>& getRequest();
 	std::list<RequestPiece>& getRequested();
 
+	// API design should be careful
 
+	size_t getDownloadTotal()const ;
+	size_t getUploadTotal() const;
 
+	Peer& setDownloadTotal(const size_t);
+	Peer& setUploadTotal(const size_t);
+
+	Peer& setStartReceiveTS(time_t);
+	time_t getStartReceiveTS() const ;
+
+	Peer& setLastDownloadTS();
+	time_t getLastDownloadTS() const ;
+
+	Peer& setLastUploadTS();
+	time_t getLastUploadTS() const ;
+
+	Peer& add_N_ByteToDownload(long long);
+	Peer& add_N_ByteToUpload(long long);
+	long long getDownloadByteCount() const;
+	long long getUploadByteCount() const;
+
+	float caculateDownloadSpeed();
+	float caculateUploadSpeed();
+
+	// Create serveral type message 
+	Peer& createHandShakeMsg(const std::string& infoHash, const std::string& peerId);
+	Peer& createKeepAliveMsg();
+	Peer& createChokInterestedMsg(int type); // TODO rethink there parameter
+	Peer& createHaveMsg(int index);
+	Peer& createBitfieldMsg();
+	Peer& createRequestMsg(int index, int begin, int length);
+	Peer& createPieceMsg(int index, int begin, char* block); // TODO different with C++
+	Peer& createCancelMsg(int index, int begin, int length);
+	Peer& createPortMsg(int port);
+
+	// TODO see source code to understanding
+	bool isCompleteMsg();
+	Peer& parseResponse();
+	Peer& parseResponseUncompleteMsg();
+	Peer& createResponseMsg();
+	Peer& prepareSendHaveMsg();
+	Peer& discardSendBuffer();
 
 private:
 	int  socket;
@@ -95,23 +142,13 @@ private:
 	std::vector<char> inBuff;
 	std::vector<char> outMessage;
 	std::vector<char> messageCopy;
-	// maybe have a represent than this
+	// maybe have a better represent than this
 	std::size_t NextSendMessageOffset;
 	std::vector<char>::iterator SendBegin;
 	std::list<RequestPiece> request;
 	std::list<RequestPiece> requested;
-
-	size_t getDownloadTotal()const ;
-	size_t getUploadTotal() const;
-
-	Peer& setDownloadTotal(const size_t);
-	Peer& setUploadTotal(const size_t);
-
 	size_t downloadTotal;
 	size_t uploadTotal;
-
-	Peer& setStartReceiveTS(time_t);
-	time_t getStartReceiveTS();
 
 	time_t startReceiveTimeStamp;
 	time_t recentSendTimeStamp;
@@ -124,4 +161,8 @@ private:
 	float downloadRate;
 	float uploadRate;
 };
+
+template<std::size_t N>
+std::ostream& operator<<(std::ostream& os, const Peer<N>& pp);
+
 
