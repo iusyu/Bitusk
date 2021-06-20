@@ -281,7 +281,6 @@ Peer& Peer::createChokInterestedMsg(int typ)
 {
 }
 
-
 Peer& Peer::createHaveMsg(int index)
 {
 }
