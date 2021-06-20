@@ -1,7 +1,23 @@
 [
   {
     "arguments": [
-      "/usr/bin/x86_64-linux-gnu-g++-9",
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++11",
+      "-Wall",
+      "-I",
+      "../include/",
+      "-o",
+      "BtError.o",
+      "BtError.cpp"
+    ],
+    "directory": "/home/vegrancy/Documents/Bitusk/src",
+    "file": "/home/vegrancy/Documents/Bitusk/src/BtError.cpp",
+    "output": "/home/vegrancy/Documents/Bitusk/src/BtError.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
       "-c",
       "-std=c++11",
       "-Wall",
@@ -11,8 +27,24 @@
       "BtLogger.o",
       "BtLogger.cpp"
     ],
-    "directory": "/home/iusk/Documents/Bitusk/src",
-    "file": "/home/iusk/Documents/Bitusk/src/BtLogger.cpp",
-    "output": "/home/iusk/Documents/Bitusk/src/BtLogger.o"
+    "directory": "/home/vegrancy/Documents/Bitusk/src",
+    "file": "/home/vegrancy/Documents/Bitusk/src/BtLogger.cpp",
+    "output": "/home/vegrancy/Documents/Bitusk/src/BtLogger.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++11",
+      "-Wall",
+      "-I",
+      "../include/",
+      "-o",
+      "BtParse.o",
+      "BtParse.cpp"
+    ],
+    "directory": "/home/vegrancy/Documents/Bitusk/src",
+    "file": "/home/vegrancy/Documents/Bitusk/src/BtParse.cpp",
+    "output": "/home/vegrancy/Documents/Bitusk/src/BtParse.o"
   }
 ]
