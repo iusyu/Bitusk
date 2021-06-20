@@ -126,6 +126,8 @@ public:
 	ParseMetaFile(const ParseMetaFile&) = delete;
 	ParseMetaFile(const std::string& );
 
+	static const std::string readMetafileToString(const std::string& filename);
+
 	bool isMultiFiles() const;
 
 	const BittorrentData& getData() const;

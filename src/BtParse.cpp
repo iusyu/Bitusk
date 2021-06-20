@@ -98,13 +98,19 @@ ParseInfo::valueType ParseInfo::parseInfo(const std::string& srcStr, const std::
 /* class ParseMetaFile IMP */
 ParseMetaFile::ParseMetaFile(const std::string& fileName) 
 {
-	std::ifstream f(fileName);
-	if(f) {
-		std::string tmpStr{std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>()};
-		MetaFileString = tmpStr;
-	}
-
+	// TODO  rewrite with utf-8
 	parseIt();
+}
+
+
+const std::string ParseMetaFile::readMetafileToString(const std::string& filename)
+{
+	std::ifstream f(filename);
+	if( f ) {
+		std::string tmpStr { std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>()};
+		return tmpStr;
+	}
+	return std::string();
 }
 
 
