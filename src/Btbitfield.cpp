@@ -48,7 +48,7 @@ Bitmap& Bitmap::reverseBit(size_t indx) {
 
 
 Bitmap& Bitmap::reverseAllBit() {
-	for( int i = 0; i <validBits; i++ ) {
+	for( size_t i = 0; i < validBits; i++ ) {
 		reverseBit(i);
 	}
 	return *this;
@@ -107,7 +107,7 @@ Bitmap& Bitmap::setBitsOn(size_t start, size_t end) {
 		throw ;
 	
 	}
-	for( int a = start; a < end; a++ ) {
+	for( size_t a = start; a < end; a++ ) {
 		setBitOn(a);
 	}
 	return *this;
@@ -165,7 +165,7 @@ Bitmap& Bitmap::getPos(size_t idx, size_t* charBitPos, size_t* charIndx) {
  * How to unify the format of output
  */
 std::ostream& operator<<(std::ostream& os, const Bitmap& bitmap) {
-	for( int i = 0; i < bitmap.bitfieldLength / 8; i++ ) {
+	for( size_t i = 0; i < bitmap.bitfieldLength / 8; i++ ) {
 		for( int ci = 0b100000000; ci > 0; ci /= 2 ) {
 			if( bitmap.pbits[i] & ci) {
 				os<<"1";
