@@ -1,12 +1,12 @@
 /*
 =============================================
-* @brief    : Bt downloader logger 
+* @brief    : Peer class to manage peers
 * @copyright: Copyright 2021 iusyu
 * @license  : Apache
-* @birth    : 2021-05-01 23:48
+* @birth    : 2021-06-05 23:48
 * @author   : sunyi
 * @version  : 0.1.0
-* @revisions: 2021-05-22
+* @revisions: 2021-06-20
 ==============================================
 */
 
@@ -21,8 +21,9 @@
 #include <utility>
 #include <vector>
 #include <map>
-#include <bitset>
 #include <list>
+
+#include <boost/dynamic_bitset.hpp>
 
 
 
@@ -44,22 +45,26 @@ struct RequestPiece{
 	size_t length;
 };
 
-template<std::size_t N>
 class Peer{
 	friend class MessageGenerator;
 	friend class MessageGeneratorImp;
-	friend std::ostream& operator<<(std::ostream& , const Peer<N>& );
+	friend std::ostream& operator<<(std::ostream& , const Peer& );
 
 public:
+	typedef boost::dynamic_bitset<unsigned char> bitfield_type;
 	enum class PeerState { Initial, HalfShaked, HandShaked, ReceivedBitfield, SendBitfield, Data, Closing };
 	enum class DataState { am_choking, am_interested, peer_choking, peer_interested};
 
 	Peer();
 
-	int& getSocket();
-	std::string& getIP();
-	unsigned short& getPort();
-	std::string& getID();
+	int getSocket() const;
+	Peer& setSocket(int);
+	const std::string& getIPaddress() const;
+	Peer& setIPaddress(const std::string&);
+	unsigned short getPort() const;
+	Peer& setPort(unsigned short);
+	const std::string& getID() const;
+	Peer& setID(const std::string&);
 	
 	Peer& setPeerState(PeerState);
 	Peer& setAmChoking(bool);
@@ -67,19 +72,19 @@ public:
 	Peer& setPeerChoking(bool);
 	Peer& setPeerInterested(bool);
 
-	std::bitset<N>& getBitset();
+	bitfield_type& getBitsetRef();
 
-	std::vector<char>& getBuff();
-	std::vector<char>& getOutMessage();
-	std::vector<char>& getCopyMessage();
+	std::vector<char>& getBufferRef();
+	std::vector<char>& getOutMessageRef();
+	std::vector<char>& getCopyMessageRef();
 	
 	Peer& setNextSendMsgOffset(size_t);
-	Peer& getNextSendMsgOffset() const;
+	size_t getNextSendMsgOffset() const;
 	std::vector<char>::iterator& getRefSendBegin();
 	std::vector<char>::iterator getSendBegin();
 	Peer& setSendBegin(const std::vector<char>::iterator&);
-	std::list<RequestPiece>& getRequest();
-	std::list<RequestPiece>& getRequested();
+	std::list<RequestPiece>& getRequestRef();
+	std::list<RequestPiece>& getRequestedRef();
 
 	// API design should be careful
 
@@ -137,7 +142,7 @@ private:
 	DataState peerChoking;
 	DataState peerInterested;
 
-	std::bitset<N> bitfield;
+	bitfield_type bitfield;
 
 	std::vector<char> inBuff;
 	std::vector<char> outMessage;
@@ -163,6 +168,6 @@ private:
 };
 
 template<std::size_t N>
-std::ostream& operator<<(std::ostream& os, const Peer<N>& pp);
+std::ostream& operator<<(std::ostream& os, const Peer& pp);
 
 
