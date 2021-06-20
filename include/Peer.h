@@ -93,7 +93,8 @@ public:
 
 	Peer& setDownloadTotal(const size_t);
 	Peer& setUploadTotal(const size_t);
-
+//=====================================================
+//TODO define
 	Peer& setStartReceiveTS(time_t);
 	time_t getStartReceiveTS() const ;
 
@@ -102,7 +103,7 @@ public:
 
 	Peer& setLastUploadTS();
 	time_t getLastUploadTS() const ;
-
+//=======================================================
 	Peer& add_N_ByteToDownload(long long);
 	Peer& add_N_ByteToUpload(long long);
 	long long getDownloadByteCount() const;
@@ -137,10 +138,10 @@ private:
 	std::string id;
 	
 	PeerState state;
-	DataState amChoking;
-	DataState amInterested;
-	DataState peerChoking;
-	DataState peerInterested;
+	bool amChoking;
+	bool amInterested;
+	bool peerChoking;
+	bool peerInterested;
 
 	bitfield_type bitfield;
 
