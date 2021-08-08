@@ -25,16 +25,25 @@
 #include <list>
 
 #include "Peer.h"
+#include "Message.h"
 
-class MessageGenerator{
-public:
-	typedef std::string msg;
-	
-};
+using namespace Bitusk;
 
 
-class MessageGeneratorImp: public MessageGenerator{
-public:
-	
-};
+HandShakeMsg::HandShakeMsg(Peer& p):peer(p)
+{
+}
 
+const ustring::value_type* HandShakeMsg::operator()()
+{
+	generateMsg();
+	return msg.c_str();
+}
+
+void HandShakeMsg::generateMsg()
+{
+	int i;
+	unsigned char keyword[20] = "BitTorrent protocol", c = 0x00;
+	unsigned char *buffer = peer.getInfoHansh();
+	msg.push_back(0x00);
+}

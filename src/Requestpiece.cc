@@ -33,6 +33,25 @@
 
 using namespace Bitusk;
 
+RequestPiece::RequestPiece(): index(0), begin(0),length(0){
+}
+
+
+RequestPiece::RequestPiece(const size_t i, const size_t b, const size_t l):index(i), begin(b), length(l)
+{
+}
+
+
+RequestPiece::RequestPiece(const size_t i):RequestPiece(i,0,12)
+{
+}
+
+
+RequestPiece::RequestPiece(const size_t i, const size_t l):RequestPiece(i,0,l) 
+{
+}
+
+
 int Peer::getSocket() const
 {
 	return this->socket;
