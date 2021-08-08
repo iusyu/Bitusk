@@ -25,16 +25,39 @@
 #include <list>
 
 #include "Peer.h"
+#include "BituskType.h"
+
+namespace Bitusk{
+
 
 class MessageGenerator{
 public:
 	typedef std::string msg;
+	virtual const ustring::value_type* operator()() = 0;
+	virtual void generateMsg() = 0;
 	
 };
 
 
 class MessageGeneratorImp: public MessageGenerator{
 public:
-	
 };
 
+class HandShakeMsg:public MessageGenerator {
+public:
+	HandShakeMsg(Peer&);
+	HandShakeMsg() = delete;
+	HandShakeMsg(const HandShakeMsg&) = delete;
+
+
+	virtual const ustring::value_type* operator()() override;
+	virtual void generateMsg() override;
+
+private:
+	Bitusk::Peer& peer;
+	ustring msg;
+
+};
+
+
+}; // namespace Bitusk;
