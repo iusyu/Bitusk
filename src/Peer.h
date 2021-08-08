@@ -22,28 +22,9 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <chrono>
 
-#include <boost/dynamic_bitset.hpp>
-
-
-
-template <typename T, std::size_t N = 1024>
-class buffer {
-public:
-	typedef T type;
-	buffer(const buffer<T>& b);
-	buffer() = default;
-private:
-	type ptrToBuf[N];
-};
-
-
-struct RequestPiece{
-	typedef std::vector<char>::iterator char_itr;
-	char_itr index;
-	char_itr begin;
-	size_t length;
-};
+namespace Bitusk{
 
 class Peer{
 	friend class MessageGenerator;
@@ -51,9 +32,7 @@ class Peer{
 	friend std::ostream& operator<<(std::ostream& , const Peer& );
 
 public:
-	typedef boost::dynamic_bitset<unsigned char> bitfield_type;
 	enum class PeerState { Initial, HalfShaked, HandShaked, ReceivedBitfield, SendBitfield, Data, Closing };
-	enum class DataState { am_choking, am_interested, peer_choking, peer_interested};
 
 	Peer();
 
@@ -72,17 +51,7 @@ public:
 	Peer& setPeerChoking(bool);
 	Peer& setPeerInterested(bool);
 
-	bitfield_type& getBitsetRef();
 
-	std::vector<char>& getBufferRef();
-	std::vector<char>& getOutMessageRef();
-	std::vector<char>& getCopyMessageRef();
-	
-	Peer& setNextSendMsgOffset(size_t);
-	size_t getNextSendMsgOffset() const;
-	std::vector<char>::iterator& getRefSendBegin();
-	std::vector<char>::iterator getSendBegin();
-	Peer& setSendBegin(const std::vector<char>::iterator&);
 	std::list<RequestPiece>& getRequestRef();
 	std::list<RequestPiece>& getRequestedRef();
 
@@ -131,7 +100,11 @@ public:
 	Peer& prepareSendHaveMsg();
 	Peer& discardSendBuffer();
 
+	typedef std::string msg_type;
+
 private:
+
+	/// ======== Per Peer Id info
 	int  socket;
 	std::string ipAddress;
 	unsigned short port;
@@ -143,32 +116,20 @@ private:
 	bool peerChoking;
 	bool peerInterested;
 
-	bitfield_type bitfield;
-
-	std::vector<char> inBuff;
-	std::vector<char> outMessage;
-	std::vector<char> messageCopy;
+	msg_type inBuff;
+	msg_type outMessage;
+	msg_type messageCopy;
 	// maybe have a better represent than this
-	std::size_t NextSendMessageOffset;
-	std::vector<char>::iterator SendBegin;
 	std::list<RequestPiece> request;
 	std::list<RequestPiece> requested;
+
+
 	size_t downloadTotal;
 	size_t uploadTotal;
-
-	time_t startReceiveTimeStamp;
-	time_t recentSendTimeStamp;
-	time_t lastDownloadTimestamp;
-	time_t lastUploadTimestamp;
-
-	long long downloadByteCount;
-	long long uploadByteCount;
-	
-	float downloadRate;
-	float uploadRate;
 };
 
 template<std::size_t N>
 std::ostream& operator<<(std::ostream& os, const Peer& pp);
 
 
+}; // namespace Bitusk

@@ -31,6 +31,8 @@
 #include "data.h"
 
 
+using namespace Bitusk;
+
 int Peer::getSocket() const
 {
 	return this->socket;
