@@ -32,54 +32,53 @@
 using namespace Bitusk;
 
 
-TransformSpeed::TransformSpeed():data.first(std::chrono::system_clock::now()),data.second(0)
+TransformSpeed::TransformSpeed():timepoint(std::chrono::system_clock::now()),counting(0)
 {
 }
 
 
-TransformSpeed::TransformSpeed(long long n):data.first(std::chrono::system_clock::now()), data.second(n)
+TransformSpeed::TransformSpeed(size_t n):timepoint(std::chrono::system_clock::now()), counting(n)
 {
 }
 
 
-long long& TransformSpeed::operator++()
+size_t& TransformSpeed::operator++()
 {
-	data.second++;
-	return data.second;
+	counting++;
+	return counting;
 }
 
 
-TransformSpeed& TransformSpeed::add(long long n){
-	data.second += n;
+TransformSpeed& TransformSpeed::add(size_t n){
+	counting+= n;
 	return *this;
 }
 
-
-long long& TransformSpeed::operator+=(long long n)
+size_t& TransformSpeed::operator+=(size_t n)
 {
 	add(n);
-	return data.second;
+	return counting;
 }
 
 
 const double TransformSpeed::rate() const 
 {	
-	auto dura = std::chrono::system_clock::now() - data.first;
-	double rate = (double)data.second / std::chrono::duration_cast<std::chrono::seconds>(dura).count();
+	auto dura = std::chrono::system_clock::now() - timepoint;
+	double rate = (double)counting / std::chrono::duration_cast<std::chrono::seconds>(dura).count();
 	return rate;
 }
 
 
 TransformSpeed& TransformSpeed::reset()
 {
-	data.second = 0;
-	data.first = std::chrono::system_clock::now();
+	counting = 0;
+	timepoint = std::chrono::system_clock::now();
 	return *this;
 }
 
 TransformSpeed::operator double() const
 {
-	rate();
+	return rate();
 }
 
 
