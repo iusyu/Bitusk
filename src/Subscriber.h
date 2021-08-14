@@ -3,12 +3,16 @@
  *
  */
 #include <list>
+#include <algorithm>
+
 #pragma once
 
+class Observer;
+class Subject;
 
 class Observer{
 public:
-    virtual void response();
+    virtual void response(Subject* );
 };
 
 class Subject{

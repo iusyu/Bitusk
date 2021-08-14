@@ -1,7 +1,7 @@
 #include "Subscriber.h"
 
 
-void Observer::response()
+void Observer::response(Subject* obj)
 {
     // do something
 }
