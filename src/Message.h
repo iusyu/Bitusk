@@ -11,7 +11,7 @@
 
 #pragma once
 
-namespace Bitusk{
+namespace bitusk{
 class Peer;
 
 class MessageHandleInterface{
@@ -70,4 +70,4 @@ public:
   msghandler_ptr CreateMsgHandler(const std::string& msg) override;
 };
 
-}; // namespace Bitusk;
+}; // namespace bitusk;

@@ -1,34 +1,46 @@
-/*
-=============================================
-* @brief    : Bt downloader logger 
-* @copyright: Copyright 2021 iusyu
-* @license  : Apache
-* @birth    : 2021-05-01 23:48
-* @author   : sunyi
-* @version  : 0.1.0
-* @revisions: 2021-05-22
-==============================================
-*/
 
 
-#pragma once
+#include "./Message.h"
 
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <memory>
-#include <utility>
-#include <vector>
-#include <map>
-#include <bitset>
-#include <list>
+using namespace bitusk;
 
-#include "Peer.h"
-#include "Message.h"
 
-using namespace Bitusk;
+int MessageHandleInterface::inttochar(int i, unsigned char c[4]) {
+  if ( c == nullptr ) return -1;
+  c[3] = i & 256;
+  c[2] = (i-c[3])/256 & 256;
+  c[1] = (i-c[3]-c[2]*256)/256/256 & 256;
+  c[0] = (i-c[3]-c[2]*256-c[1]*256*256)/256/256/256 & 256;
+  return 0;
+}
 
+
+int MessageHandleInterface::chartoint(unsigned char c[4]) {
+  if ( c == nullptr ) return -1;
+  return c[0]*256*256*256 + c[1]*256*256 + c[2]*256 + c[3];
+}
+
+
+size_t ChokeMsgParser::HandleMsg(Peer* peer, const std::string& msg) {
+}
+
+
+FactoryInterface::FactoryInterface() {
+  func_['0xff'] = std::make_shared<ErrorGen>();
+}
+
+
+// Class MessageHandleParserFactory
+MessageHandleParserFactory::MessageHandleParserFactory() {
+  func_['0xff'] = std::make_shared<ChokeMsgParser>();
+}
+
+
+MessageHandleParserFactory::msghandler_ptr
+MessageHandleParserFactory::CreateMsgHandler(const std::string &msg){
+  if ( !msg.empty() ) return func_[msg[4]];
+  return func_['0xff'];
+}
 
 HandShakeMsg::HandShakeMsg(Peer& p):peer(p)
 {
