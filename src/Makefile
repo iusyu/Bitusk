@@ -3,7 +3,7 @@
 
 ARCHIVENAME=libbtd.a
 CXXFLAG=-c -std=c++11 -Wall
-INCLIDE=-I ../include/
+#INCLIDE=-I
 SRCS=$(wildcard *.cpp)
 OBJS=$(patsubst %.cpp,%.o, $(SRCS))
 

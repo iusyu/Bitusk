@@ -1,63 +1,73 @@
-/*
-=============================================
-* @brief    : Bt downloader logger 
-* @copyright: Copyright 2021 iusyu
-* @license  : Apache
-* @birth    : 2021-05-01 23:48
-* @author   : sunyi
-* @version  : 0.1.0
-* @revisions: 2021-05-22
-==============================================
-*/
+// License BSD
+// Author uttep
+//
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <memory>
+
 
 
 #pragma once
 
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <memory>
-#include <utility>
-#include <vector>
-#include <map>
-#include <bitset>
-#include <list>
+namespace bitusk{
+class Peer;
 
-#include "Peer.h"
-#include "BituskType.h"
-
-namespace Bitusk{
-
-
-class MessageGenerator{
+class MessageHandleInterface{
 public:
-	typedef std::string msg;
-	virtual const ustring::value_type* operator()() = 0;
-	virtual void generateMsg() = 0;
-	
+  MessageHandleInterface();
+  ~MessageHandleInterface();
+  virtual size_t HandleMsg(Peer* peer, const char* msg) = 0;
+  virtual size_t HandleMsg(Peer* peer, const std::string& msg) = 0;
+protected:
+  int inttochar(int i, unsigned char c[4]);
+  int chartoint(unsigned char c[4]);
 };
 
 
-class MessageGeneratorImp: public MessageGenerator{
+class ChokeMsgParser:public MessageHandleInterface {
 public:
-};
-
-class HandShakeMsg:public MessageGenerator {
-public:
-	HandShakeMsg(Peer&);
-	HandShakeMsg() = delete;
-	HandShakeMsg(const HandShakeMsg&) = delete;
-
-
-	virtual const ustring::value_type* operator()() override;
-	virtual void generateMsg() override;
-
-private:
-	Bitusk::Peer& peer;
-	ustring msg;
-
+  ChokeMsgParser();
+  ~ChokeMsgParser();
+  virtual size_t HandleMsg(Peer* peer, const char* msg) override;
+  virtual size_t HandleMsg(Peer* peer, const std::string& msg) override;
 };
 
 
-}; // namespace Bitusk;
+class ErrorGen: public MessageHandleInterface {
+public:
+  virtual size_t HandleMsg(Peer* peer, const char* msg) override;
+  virtual size_t HandleMsg(Peer* peer, const std::string& msg) override;
+};
+
+
+// Message Handler Generator
+
+
+class FactoryInterface {
+public:
+  typedef std::map<char,std::shared_ptr<MessageHandleInterface>> rpc_type;
+  typedef std::shared_ptr<MessageHandleInterface> msghandler_ptr;
+
+  FactoryInterface();
+  virtual msghandler_ptr CreateMsgHandler(const std::string& msg);
+  virtual msghandler_ptr CreateMsgHandler(Peer* peer);
+protected:
+  rpc_type func_;
+};
+
+
+class MessageHandleGenFactory: public FactoryInterface {
+public:
+  msghandler_ptr CreateMsgHandler(const std::string &msg) override;
+};
+
+
+class MessageHandleParserFactory: public FactoryInterface {
+public:
+  MessageHandleParserFactory();
+  msghandler_ptr CreateMsgHandler(const std::string& msg) override;
+};
+
+}; // namespace bitusk;
