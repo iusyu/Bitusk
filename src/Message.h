@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <exception>
 #include <memory>
 
 
@@ -35,7 +36,7 @@ public:
 };
 
 
-class ErrorGen: public MessageHandleInterface {
+class MsgError: public MessageHandleInterface, public std::exception {
 public:
   virtual size_t HandleMsg(Peer* peer, const char* msg) override;
   virtual size_t HandleMsg(Peer* peer, const std::string& msg) override;
