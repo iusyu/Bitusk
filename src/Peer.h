@@ -24,6 +24,12 @@
 #include <list>
 #include <chrono>
 
+#include <boost/asio.hpp>
+
+
+#include "BituskType.h"
+#include "Requestpiece.h"
+
 namespace Bitusk{
 
 class Peer{
@@ -62,17 +68,7 @@ public:
 
 	Peer& setDownloadTotal(const size_t);
 	Peer& setUploadTotal(const size_t);
-//=====================================================
-//TODO define
-	Peer& setStartReceiveTS(time_t);
-	time_t getStartReceiveTS() const ;
 
-	Peer& setLastDownloadTS();
-	time_t getLastDownloadTS() const ;
-
-	Peer& setLastUploadTS();
-	time_t getLastUploadTS() const ;
-//=======================================================
 	Peer& add_N_ByteToDownload(long long);
 	Peer& add_N_ByteToUpload(long long);
 	long long getDownloadByteCount() const;
@@ -105,9 +101,8 @@ public:
 private:
 
 	/// ======== Per Peer Id info
-	int  socket;
-	std::string ipAddress;
-	unsigned short port;
+	socket_ptr socket;
+	endpeer addr;
 	std::string id;
 	
 	PeerState state;

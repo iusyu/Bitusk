@@ -24,18 +24,30 @@
 #include <list>
 #include <chrono>
 
+
+#include "Subscriber.h"
+
 namespace Bitusk{
 
-class TransformSpeed{
+
+/*! Abstract Speed Class provide API of speed */
+class Speed{
+public:
+	virtual double getSpeedOf() = 0;
+};
+
+
+/*! Network transform speed counting class, 
+ *  also provide a API of subject of Observer Design Pattern */
+class TransformSpeed: public Subject, public Speed{
 public:
 	TransformSpeed();
-	TransformSpeed(long long);
+	TransformSpeed(size_t);
 	typedef std::chrono::system_clock::time_point duration_type;
-	typedef std::pair<duration_type, long long> speed_type;
 
-	long long& operator++();
-	long long& operator+=(long long);
-	TransformSpeed& add(long long);
+	size_t& operator++();
+	size_t& operator+=(size_t);
+	TransformSpeed& add(size_t);
 	const double rate() const;
 	
 	TransformSpeed& reset();
@@ -43,15 +55,13 @@ public:
 	operator double() const ;
 
 private:
-	speed_type data;
-	
+	duration_type timepoint;
+	size_t counting;
 };
 
 
-class DisplaySpeed{
+class DisplaySpeed: Observer{
 public:
-
-
 
 };
 
